@@ -1,7 +1,7 @@
-// src/components/PublicPortal.jsx
-// Tampilan portal publik: header, hero, aplikasi, berita, peraturan, footer, modal berita
+"use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Icons, renderIcon } from "./Icons";
 import { Card, Badge, Button, Modal } from "./UI";
 import { DEFAULT_HERO, DEFAULT_SECTIONS, FALLBACK_IMAGE } from "../config";
@@ -17,7 +17,8 @@ function getSection(sections, key) {
   };
 }
 
-export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) {
+export default function PublicPortal({ data, currentUser, onGoAdmin }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("home");
   const [selectedNews, setSelectedNews] = useState(null);
 
@@ -31,7 +32,6 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] font-sans flex flex-col">
-      {/* ── Header ── */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div
@@ -67,7 +67,7 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
               <Button
                 variant="outline"
                 className="py-2.5 text-[14px]"
-                onClick={onGoAdmin}
+                onClick={() => navigate("/admin")}
               >
                 <Icons.LayoutDashboard className="w-4 h-4 mr-2" /> Ruang Kerja
               </Button>
@@ -75,7 +75,7 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
               <Button
                 variant="primary"
                 className="py-2.5 px-6 text-[14px]"
-                onClick={onLogin}
+                onClick={() => navigate("/login")}
               >
                 Masuk
               </Button>
@@ -85,7 +85,6 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
       </header>
 
       <main className="flex-grow w-full">
-        {/* ── Hero ── */}
         {activeTab === "home" && (
           <section className="bg-white border-b border-gray-200 relative overflow-hidden">
             {hero.bg_image_url && (
@@ -135,7 +134,6 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
         )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* ── Aplikasi ── */}
           {(activeTab === "home" || activeTab === "aplikasi") && (
             <section className="mb-20">
               <div className="flex items-center justify-between mb-8">
@@ -180,23 +178,13 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
                     </div>
                   </a>
                 ))}
-                {(!data.links || data.links.length === 0) && (
-                  <p className="text-gray-500 col-span-full">
-                    Belum ada aplikasi yang ditambahkan.
-                  </p>
-                )}
               </div>
             </section>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {/* ── Berita ── */}
             {(activeTab === "home" || activeTab === "berita") && (
-              <section
-                className={`lg:col-span-2 ${
-                  activeTab === "berita" ? "lg:col-span-3" : ""
-                }`}
-              >
+              <section className={`lg:col-span-2 ${activeTab === "berita" ? "lg:col-span-3" : ""}`}>
                 <div className="mb-8">
                   <h3 className="text-[24px] font-bold font-display text-gray-900 mb-2">
                     {getSection(data.sections, "berita").title}
@@ -205,13 +193,7 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
                     {getSection(data.sections, "berita").subtitle}
                   </p>
                 </div>
-                <div
-                  className={`grid gap-8 ${
-                    activeTab === "berita"
-                      ? "md:grid-cols-2 lg:grid-cols-3"
-                      : "md:grid-cols-2"
-                  }`}
-                >
+                <div className={`grid gap-8 ${activeTab === "berita" ? "md:grid-cols-2 lg:grid-cols-3" : "md:grid-cols-2"}`}>
                   {data.berita?.map((item) => (
                     <Card
                       key={item.id}
@@ -235,10 +217,7 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
                         <div className="flex items-center text-[12px] font-medium text-gray-500 mb-4 space-x-2">
                           <Icons.Calendar className="w-4 h-4" />
                           <span>
-                            {new Date(item.tanggal).toLocaleDateString(
-                              "id-ID",
-                              { day: "numeric", month: "long", year: "numeric" }
-                            )}
+                            {new Date(item.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                           </span>
                         </div>
                         <h4 className="text-[18px] font-semibold font-display text-gray-900 mb-3 leading-snug line-clamp-2">
@@ -248,28 +227,17 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
                           {item.ringkasan}
                         </p>
                         <span className="text-[14px] font-semibold text-primary inline-flex items-center mt-auto">
-                          Baca Artikel{" "}
-                          <Icons.ChevronRight className="w-4 h-4 ml-1" />
+                          Baca Artikel <Icons.ChevronRight className="w-4 h-4 ml-1" />
                         </span>
                       </div>
                     </Card>
                   ))}
-                  {(!data.berita || data.berita.length === 0) && (
-                    <p className="text-gray-500 col-span-full">
-                      Belum ada berita yang diterbitkan.
-                    </p>
-                  )}
                 </div>
               </section>
             )}
 
-            {/* ── Peraturan ── */}
             {(activeTab === "home" || activeTab === "peraturan") && (
-              <section
-                className={`lg:col-span-1 ${
-                  activeTab === "peraturan" ? "lg:col-span-3" : ""
-                }`}
-              >
+              <section className={`lg:col-span-1 ${activeTab === "peraturan" ? "lg:col-span-3" : ""}`}>
                 <div className="mb-8">
                   <h3 className="text-[24px] font-bold font-display text-gray-900 mb-2">
                     {getSection(data.sections, "peraturan").title}
@@ -281,59 +249,25 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
                 <Card noPadding={true}>
                   <div className="divide-y divide-gray-100">
                     {data.peraturan?.map((reg) => (
-                      <div
-                        key={reg.id}
-                        className="p-6 hover:bg-gray-50 transition-colors flex items-start space-x-4"
-                      >
+                      <div key={reg.id} className="p-6 hover:bg-gray-50 transition-colors flex items-start space-x-4">
                         <div className="mt-1 p-2.5 bg-indigo-50 rounded-[10px] text-primary border border-indigo-100 shadow-sm">
                           <Icons.FileText className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                            <h5
-                              className="font-semibold text-[14px] font-display text-gray-900 truncate"
-                              title={reg.nomor}
-                            >
+                            <h5 className="font-semibold text-[14px] font-display text-gray-900 truncate" title={reg.nomor}>
                               {reg.nomor}
                             </h5>
-                            <Badge
-                              variant="outline"
-                              className="w-max text-[12px] py-0.5"
-                            >
-                              {reg.tahun}
-                            </Badge>
+                            <Badge variant="outline" className="w-max text-[12px] py-0.5">{reg.tahun}</Badge>
                           </div>
-                          <p className="text-[14px] text-gray-500 line-clamp-2 mb-3 leading-relaxed">
-                            {reg.tentang}
-                          </p>
-                          <a
-                            href={reg.file_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[14px] font-semibold text-primary hover:text-indigo-700 inline-flex items-center"
-                          >
+                          <p className="text-[14px] text-gray-500 line-clamp-2 mb-3 leading-relaxed">{reg.tentang}</p>
+                          <a href={reg.file_url} target="_blank" rel="noopener noreferrer" className="text-[14px] font-semibold text-primary hover:text-indigo-700 inline-flex items-center">
                             Unduh PDF
                           </a>
                         </div>
                       </div>
                     ))}
-                    {(!data.peraturan || data.peraturan.length === 0) && (
-                      <div className="p-6 text-[14px] text-gray-500 text-center">
-                        Belum ada data peraturan.
-                      </div>
-                    )}
                   </div>
-                  {activeTab === "home" && data.peraturan?.length > 0 && (
-                    <div className="p-4 bg-gray-50 border-t border-gray-200 text-center">
-                      <Button
-                        variant="ghost"
-                        className="w-full text-[14px]"
-                        onClick={() => setActiveTab("peraturan")}
-                      >
-                        Lihat Seluruh Arsip
-                      </Button>
-                    </div>
-                  )}
                 </Card>
               </section>
             )}
@@ -341,7 +275,6 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
         </div>
       </main>
 
-      {/* ── Modal Berita ── */}
       <Modal
         isOpen={!!selectedNews}
         onClose={() => setSelectedNews(null)}
@@ -365,74 +298,31 @@ export default function PublicPortal({ data, currentUser, onLogin, onGoAdmin }) 
             <div className="flex items-center text-[14px] font-medium text-gray-500 space-x-2">
               <Icons.Calendar className="w-4 h-4" />
               <span>
-                {new Date(selectedNews.tanggal).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
+                {new Date(selectedNews.tanggal).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
               </span>
             </div>
             <div className="text-gray-600 whitespace-pre-wrap text-[16px] leading-relaxed border-t border-gray-100 pt-6">
               {selectedNews.konten || selectedNews.ringkasan}
             </div>
             <div className="pt-4 flex justify-end">
-              <Button onClick={() => setSelectedNews(null)} variant="outline">
-                Tutup Artikel
-              </Button>
+              <Button onClick={() => setSelectedNews(null)} variant="outline">Tutup Artikel</Button>
             </div>
           </div>
         )}
       </Modal>
 
-      {/* ── Footer ── */}
       <footer className="bg-white border-t border-gray-200 pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 rounded-[8px] bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-sm">
-                  <Icons.Building2 className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-display font-bold text-[18px] text-gray-900 tracking-tight">
-                  Portal<span className="text-primary">Keuangan</span>
-                </span>
-              </div>
-              <p className="text-[14px] text-gray-500 max-w-sm leading-relaxed">
-                Platform SaaS terpadu yang memusatkan seluruh layanan data keuangan,
-                regulasi, dan informasi anggaran Universitas Islam Negeri Palopo.
-              </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center space-x-3 mb-6">
+            <div className="w-8 h-8 rounded-[8px] bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-sm">
+              <Icons.Building2 className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h4 className="font-bold font-display text-gray-900 mb-6">Sumber Daya</h4>
-              <ul className="space-y-4 text-[14px]">
-                {[
-                  ["Situs Utama UIN Palopo", "#"],
-                  ["Kementerian Agama RI", "#"],
-                  ["Pusat Layanan Kemenkeu", "#"],
-                ].map(([label, href]) => (
-                  <li key={label}>
-                    <a href={href} className="text-gray-500 hover:text-primary transition-colors">
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold font-display text-gray-900 mb-6">Kontak</h4>
-              <ul className="space-y-4 text-[14px] text-gray-500">
-                <li>Gedung Rektorat Lt. 2</li>
-                <li>Jl. Agatis, Balandai</li>
-                <li>Sulawesi Selatan 91914</li>
-                <li className="font-semibold text-primary pt-2">
-                  keu.uinpalopo@uinpalopo.ac.id
-                </li>
-              </ul>
-            </div>
+            <span className="font-display font-bold text-[18px] text-gray-900 tracking-tight">
+              Portal<span className="text-primary">Keuangan</span>
+            </span>
           </div>
-          <div className="border-t border-gray-200 pt-8 text-[14px] text-center text-gray-500 font-medium">
-            © {new Date().getFullYear()} Sub Bagian Keuangan UIN Palopo. Hak cipta
-            dilindungi.
+          <div className="border-t border-gray-200 pt-8 text-[14px] text-gray-500 font-medium">
+            © {new Date().getFullYear()} Sub Bagian Keuangan UIN Palopo. Hak cipta dilindungi.
           </div>
         </div>
       </footer>
