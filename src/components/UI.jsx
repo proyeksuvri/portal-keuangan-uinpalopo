@@ -1,5 +1,5 @@
 // src/components/UI.jsx
-// Komponen UI primitif: Card, Badge, Button, Modal
+// Komponen UI primitif: Card, Badge, Button, Modal, Skeleton
 import { Icons } from "./Icons";
 
 export const Card = ({ children, className = "", noPadding = false, ...props }) => (
@@ -79,6 +79,10 @@ export const Modal = ({ isOpen, onClose, title, children }) => {
     </div>
   );
 };
+
+export const Skeleton = ({ className = "" }) => (
+  <div className={`animate-pulse bg-gray-200 rounded-[12px] ${className}`} />
+);
 
 export const EmptyState = ({ message = "Tidak ada data ditemukan", icon: Icon = Icons.Search }) => (
   <div className="flex flex-col items-center justify-center py-20 text-center animate-in fade-in duration-500">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import Sidebar from "./admin/Sidebar";
 import AdminHeader from "./admin/AdminHeader";
 import DashboardHome from "./admin/DashboardHome";
@@ -36,12 +37,15 @@ export default function AdminDashboard({ data, setData, currentUser, onLogout })
   const handleDeleteLocal = (type, id) => {
     const updatedList = data[type].filter(item => item.id !== id);
     persistData({ ...data, [type]: updatedList });
+    toast.success("Data berhasil dihapus dari sistem.");
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     const { type, mode, item } = modalConfig;
     setIsSubmitting(true);
+    const loadingToast = toast.loading("Menyimpan data...");
+    
     const newItem = { ...formData, id: mode === "add" ? `id_${Date.now()}` : item?.id || "hero_1" };
 
     try {
@@ -53,12 +57,13 @@ export default function AdminDashboard({ data, setData, currentUser, onLogout })
         else updatedList = data[type].map((d) => (d.id === newItem.id ? newItem : d));
         
         persistData({ ...data, [type]: updatedList });
+        toast.success("Konfigurasi berhasil diperbarui!", { id: loadingToast });
         closeModal();
       } else {
-        alert(result.message || "Gagal menyimpan data.");
+        toast.error(result.message || "Gagal menyimpan data.", { id: loadingToast });
       }
     } catch (err) { 
-      alert("Error: " + err.message); 
+      toast.error("Terjadi kesalahan: " + err.message, { id: loadingToast }); 
     } finally { 
       setIsSubmitting(false); 
     }

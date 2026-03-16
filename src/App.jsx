@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import { usePortalData } from "./hooks/usePortalData";
 import PublicPortal from "./components/PublicPortal";
 import LoginPage from "./components/LoginPage";
 import AdminDashboard from "./components/AdminDashboard";
 import { Icons } from "./components/Icons";
-import { Card, Button } from "./components/UI";
+import { Card, Button, Skeleton } from "./components/UI";
 
 export default function App() {
   const { data, loading, error, setData } = usePortalData();
@@ -21,17 +22,26 @@ export default function App() {
     setCurrentUser(null);
   };
 
-  // Preloader or initial loading state
   if (loading && !data.berita.length) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
-        <p className="mt-4 text-gray-500 font-medium">Memuat data...</p>
+      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-6">
+        <div className="max-w-7xl w-full space-y-8">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+          <Skeleton className="h-[400px] w-full" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-48 w-full" />
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center p-4 font-sans">
@@ -51,20 +61,17 @@ export default function App() {
 
   return (
     <Router>
+      <Toaster position="top-right" />
       <Routes>
-        {/* Public Route */}
         <Route 
           path="/" 
           element={
             <PublicPortal
               data={data}
               currentUser={currentUser}
-              onGoAdmin={() => window.location.href = "/admin"}
             />
           } 
         />
-
-        {/* Login Route */}
         <Route 
           path="/login" 
           element={
@@ -77,8 +84,6 @@ export default function App() {
             )
           } 
         />
-
-        {/* Admin Route */}
         <Route 
           path="/admin" 
           element={
@@ -94,8 +99,6 @@ export default function App() {
             )
           } 
         />
-
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
