@@ -29,65 +29,100 @@ export default function LoginPage({ onSuccess, onCancel }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center p-4 font-sans">
-      <div className="max-w-md w-full animate-in fade-in duration-500">
-        <Card className="p-8">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
+      <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/5 rounded-full blur-3xl"></div>
+
+      <div className="max-w-md w-full animate-in fade-in zoom-in-95 duration-500 relative z-10">
+        <div className="flex flex-col items-center mb-10">
+          <div className="w-16 h-16 rounded-[20px] bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl shadow-indigo-200 mb-6">
+            <Icons.Building2 className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold font-display text-gray-900 tracking-tight">
+            Portal<span className="text-primary">Keuangan</span>
+          </h1>
+          <p className="text-gray-500 mt-2 font-medium">UIN Datokarama Palopo</p>
+        </div>
+
+        <Card className="p-8 md:p-10 border-gray-100 shadow-xl shadow-gray-200/50">
           <div className="text-center mb-8">
-            <div className="mx-auto w-12 h-12 rounded-[12px] bg-indigo-50 text-primary flex items-center justify-center mb-4 border border-indigo-100">
-              <Icons.Lock className="w-6 h-6" />
-            </div>
-            <h2 className="text-[24px] font-bold font-display text-gray-900">
-              Selamat Datang Kembali
-            </h2>
-            <p className="text-[14px] text-gray-500 mt-2">
-              Masukkan kredensial Anda untuk mengakses sistem
-            </p>
+            <h2 className="text-[22px] font-bold text-gray-900">Masuk ke Sistem</h2>
+            <p className="text-[14px] text-gray-500 mt-1">Masukkan kredensial administrasi Anda</p>
           </div>
 
           {error && (
-            <div className="bg-red-50 text-error p-4 rounded-[10px] text-[14px] mb-6 flex items-start space-x-3 border border-red-100">
+            <div className="bg-red-50 text-error p-4 rounded-[12px] text-[13px] mb-6 flex items-start space-x-3 border border-red-100 animate-in slide-in-from-top-2">
               <Icons.AlertCircle className="w-5 h-5 flex-shrink-0" />
-              <span>{error}</span>
+              <span className="font-semibold leading-relaxed">{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-[14px] font-medium text-gray-700 mb-1.5">
+              <label className="block text-[13px] font-bold text-gray-700 mb-2 uppercase tracking-wide">
                 Nama Pengguna
               </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-[10px] border border-gray-200 p-3 text-[16px] text-gray-900 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                required
-                disabled={loading}
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Icons.User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full rounded-[12px] border border-gray-200 pl-11 p-3.5 text-[15px] text-gray-900 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-gray-50/50"
+                  placeholder="admin_keuangan"
+                  required
+                  disabled={loading}
+                />
+              </div>
             </div>
             <div>
-              <label className="block text-[14px] font-medium text-gray-700 mb-1.5">
+              <label className="block text-[13px] font-bold text-gray-700 mb-2 uppercase tracking-wide">
                 Kata Sandi
               </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-[10px] border border-gray-200 p-3 text-[16px] text-gray-900 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                required
-                disabled={loading}
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Icons.Lock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-[12px] border border-gray-200 pl-11 p-3.5 text-[15px] text-gray-900 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-gray-50/50"
+                  placeholder="••••••••"
+                  required
+                  disabled={loading}
+                />
+              </div>
             </div>
-            <Button type="submit" className="w-full mt-2" disabled={loading}>
-              {loading ? "Mengautentikasi..." : "Masuk"}
+            
+            <Button type="submit" className="w-full py-4 text-[16px]" disabled={loading}>
+              {loading ? (
+                <div className="flex items-center">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-3"></div>
+                  Memproses...
+                </div>
+              ) : "Masuk Sekarang"}
             </Button>
+
             {onCancel && (
-              <Button type="button" variant="ghost" className="w-full" onClick={onCancel}>
-                Kembali ke Portal
-              </Button>
+              <button 
+                type="button" 
+                className="w-full text-center text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors pt-2"
+                onClick={onCancel}
+              >
+                Kembali ke Beranda
+              </button>
             )}
           </form>
         </Card>
+        
+        <p className="text-center mt-8 text-[12px] text-gray-400 font-medium">
+          Sistem Informasi Keuangan Terpadu &copy; {new Date().getFullYear()}
+        </p>
       </div>
     </div>
   );
