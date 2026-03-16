@@ -1,17 +1,26 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Icons } from "../Icons";
 import { Button } from "../UI";
 
 export default function Navbar({ activeTab, setActiveTab, currentUser }) {
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogoClick = () => {
     setActiveTab("home");
     navigate("/");
+    setIsMobileMenuOpen(false);
   };
+
+  const navItems = [
+    { id: "home", label: "Beranda" },
+    { id: "aplikasi", label: "Aplikasi" },
+    { id: "peraturan", label: "Peraturan" },
+    { id: "berita", label: "Berita" }
+  ];
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -28,13 +37,9 @@ export default function Navbar({ activeTab, setActiveTab, currentUser }) {
           </span>
         </div>
 
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          {[
-            { id: "home", label: "Beranda" },
-            { id: "aplikasi", label: "Aplikasi" },
-            { id: "peraturan", label: "Peraturan" },
-            { id: "berita", label: "Berita" }
-          ].map((tab) => (
+          {navItems.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -52,27 +57,81 @@ export default function Navbar({ activeTab, setActiveTab, currentUser }) {
           ))}
         </nav>
 
-        <div className="flex items-center">
-          {currentUser ? (
-            <Button
-              variant="outline"
-              className="py-2.5 text-[14px] px-4 md:px-6"
-              onClick={() => navigate("/admin")}
-            >
-              <Icons.LayoutDashboard className="w-4 h-4 md:mr-2" />
-              <span className="hidden md:inline">Ruang Kerja</span>
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              className="py-2.5 px-6 text-[14px]"
-              onClick={() => navigate("/login")}
-            >
-              Masuk
-            </Button>
-          )}
+        <div className="flex items-center space-x-2">
+          <div className="hidden md:block">
+            {currentUser ? (
+              <Button
+                variant="outline"
+                className="py-2.5 text-[14px] px-6"
+                onClick={() => navigate("/admin")}
+              >
+                <Icons.LayoutDashboard className="w-4 h-4 mr-2" />
+                Ruang Kerja
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                className="py-2.5 px-6 text-[14px]"
+                onClick={() => navigate("/login")}
+              >
+                Masuk
+              </Button>
+            )}
+          </div>
+          
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <Icons.X className="w-6 h-6" /> : <Icons.Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Navigation Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-b border-gray-200 animate-in slide-in-from-top duration-300">
+          <div className="px-4 pt-2 pb-6 space-y-1">
+            {navItems.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`block w-full text-left px-4 py-3 rounded-xl text-[15px] font-semibold transition-all ${
+                  activeTab === tab.id
+                    ? "bg-indigo-50 text-primary"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+            <div className="pt-4 border-t border-gray-100 mt-4">
+              {currentUser ? (
+                <Button
+                  variant="outline"
+                  className="w-full py-3"
+                  onClick={() => navigate("/admin")}
+                >
+                  <Icons.LayoutDashboard className="w-4 h-4 mr-2" />
+                  Ruang Kerja
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  className="w-full py-3"
+                  onClick={() => navigate("/login")}
+                >
+                  Masuk ke Sistem
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
