@@ -24,19 +24,21 @@ export default function App() {
 
   if (loading && !data.berita.length) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center justify-center p-6">
-        <div className="max-w-7xl w-full space-y-8">
-          <div className="flex justify-between items-center">
-            <Skeleton className="h-10 w-48" />
-            <Skeleton className="h-10 w-32" />
+      <div className="min-h-screen bg-[#F9FAFB] flex flex-col items-center p-6 space-y-8">
+        <div className="max-w-7xl w-full flex justify-between items-center py-4">
+          <Skeleton className="h-10 w-48" />
+          <div className="flex space-x-4">
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-6 w-20" />
           </div>
-          <Skeleton className="h-[400px] w-full" />
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-          </div>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="max-w-7xl w-full">
+          <Skeleton className="h-[450px] w-full rounded-[24px]" />
+        </div>
+        <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-56 w-full rounded-[16px]" />)}
         </div>
       </div>
     );
@@ -45,14 +47,18 @@ export default function App() {
   if (error) {
     return (
       <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center p-4 font-sans">
-        <Card className="max-w-md w-full text-center">
-          <Icons.AlertCircle className="w-12 h-12 text-error mx-auto mb-4" />
+        <Card className="max-w-md w-full text-center p-10">
+          <div className="w-16 h-16 bg-red-50 text-error rounded-full flex items-center justify-center mx-auto mb-6">
+            <Icons.AlertCircle className="w-8 h-8" />
+          </div>
           <h2 className="text-[24px] font-bold font-display text-gray-900 mb-2">
             Koneksi Gagal
           </h2>
-          <p className="text-[16px] text-gray-500 mb-6">{error}</p>
+          <p className="text-[16px] text-gray-500 mb-8 leading-relaxed">
+            {error}. Pastikan URL Google Apps Script sudah benar atau periksa koneksi internet Anda.
+          </p>
           <Button onClick={() => window.location.reload()} className="w-full">
-            Coba Lagi
+            Coba Segarkan Halaman
           </Button>
         </Card>
       </div>
